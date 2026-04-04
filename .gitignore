@@ -1,0 +1,7 @@
+main.build
+main.exe
+main.dist
+main.onefile-build
+venv
+__pycache__
+activity_log.csv

@@ -1,0 +1,14 @@
+hour,minute,second,action,params,duration
+
+12,02,00,watch_video,https://rutube.ru/video/1819d8581be472a67f2724f66a84f149/,30
+
+12,02,45,open_file,"C:\Users\yokko\Desktop\test.txt",20
+12,03,10,open_file,"C:\Users\yokko\Desktop\test.docx",20
+
+12,03,30,open_notepad_and_write,"text=test text for txt file;path=C:\Users\yokko\Desktop\test.txt", 20
+
+12,03,55,download_file,https://drive.google.com/uc?export=download&id=1-SNPP-OqrUVAzVcNTIFCSvTYTZIAAJ1X,20
+
+12,04,20,clear_trash,"", 10
+
+12,04,35,open_url,https://mtuci.ru/,10

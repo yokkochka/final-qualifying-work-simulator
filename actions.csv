@@ -1,0 +1,17 @@
+hour,minute,second,action,params,duration
+
+# --- ВИДЕО ---
+12,02,10,watch_video,https://rutube.ru/video/1819d8581be472a67f2724f66a84f149/,180
+
+# --- ЗАПРОСЫ ---
+12,02,10,open_url,https://mtuci.ru/,10
+12,02,10,download_file,https://drive.google.com/uc?export=download&id=1-SNPP-OqrUVAzVcNTIFCSvTYTZIAAJ1X, 20
+
+# --- ФАЙЛЫ И ПАПКИ ---
+12,04,01,open_file,"C:\Users\yokko\Desktop\test.docx",20
+12,04,05,create_text_file,"C:\Users\yokko\Desktop\test.txt",20
+12,04,10,open_notepad_and_write,"text=test text for txt file;path=C:\Users\yokko\Desktop\test.txt", 20
+
+# --- КОРЗИНА ---
+12,04,05,clear_trash,"", 10
+

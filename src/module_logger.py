@@ -1,0 +1,54 @@
+import logging
+import os
+
+class CSVLogger:
+    def __init__(self, filename="activity_log.csv"):
+        self.filename = filename
+        self._prepare_file()
+        
+        self.logger = logging.getLogger("UserSimulator")
+        self.logger.setLevel(logging.DEBUG)
+        
+        if self.logger.hasHandlers():
+            self.logger.handlers.clear()
+        
+        handler = logging.FileHandler(self.filename, encoding='utf-8')
+        
+        formatter = logging.Formatter(
+            fmt='%(asctime)s;%(levelname)s;%(message)s',
+            datefmt='%Y-%m-%dT%H:%M:%S'
+        )
+        
+        formatter.default_msec_format = '%s.%03d'
+        
+        handler.setFormatter(formatter)
+        self.logger.addHandler(handler)
+
+    def info(self, message):
+        message = str(message).replace(';', ',')
+        self.log("info", message)
+
+    def debug(self, message):
+        message = str(message).replace(';', ',')
+        self.log("debug", message)
+
+    def error(self, message):
+        message = str(message).replace(';', ',')
+        self.log("error", message)
+    
+    def log(self, level, message, context="None"): 
+        clean_message = str(message).replace(';', ',') 
+        clean_context = str(context).replace(';', ',') 
+        full_msg = f"{clean_message};{clean_context}" 
+        if level.lower() == "info": 
+            self.logger.info(full_msg) 
+        elif level.lower() == "error": 
+            self.logger.error(full_msg) 
+        elif level.lower() == "debug": 
+            self.logger.debug(full_msg)
+
+    def _prepare_file(self):
+        # if not os.path.exists(self.filename):
+        if os.path.exists(self.filename):
+            with open(self.filename, 'w', encoding='utf-8') as f:
+                f.write("timestamp;level\n")
