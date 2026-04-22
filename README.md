@@ -51,7 +51,7 @@ pip install PyGetWindow pywin32
 Собрать проект standalone-версию можно, используя следующую команду (при сборке везде выбрать `yes`):
 
 ```powershell
-python -m nuitka --follow-imports --standalone --jobs=4 --onefile --disable-console --include-package-data=flet main.py
+python -m nuitka main.py --follow-imports --standalone --jobs=4 --onefile --disable-console --include-package-data=flet --output-filename=imitationagent.exe
 ```
 
 После сборки для запуска достаточно иметь:

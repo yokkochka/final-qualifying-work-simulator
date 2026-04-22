@@ -1,5 +1,5 @@
 main.build
-main.exe
+imitationagent.exe
 main.dist
 main.onefile-build
 venv
