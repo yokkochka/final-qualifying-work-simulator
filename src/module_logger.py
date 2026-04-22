@@ -39,10 +39,9 @@ class CSVLogger:
         message = str(message).replace(';', ',')
         self.log("error", message)
     
-    def log(self, level, message, context="None"): 
+    def log(self, level, message): 
         clean_message = str(message).replace(';', ',') 
-        clean_context = str(context).replace(';', ',') 
-        full_msg = f"{clean_message};{clean_context}" 
+        full_msg = f"{clean_message}" 
         if level.lower() == "info": 
             self.logger.info(full_msg) 
         elif level.lower() == "error": 
