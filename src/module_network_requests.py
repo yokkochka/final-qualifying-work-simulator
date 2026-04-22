@@ -7,29 +7,35 @@ logger = CSVLogger()
 
 def watch_video(url,duration):
 
-    if check_active_window_is_browser():
-        mcf.hotkey('ctrl', 't')
-    else:
-        mcf.win_m()
-        mcf.hotkey('win', 's')
-        mcf.human_delay()
+    # if check_active_window_is_browser():
+    #     logger.info(f"Активное окно - браузер, открытие новой вкладки")
+    #     mcf.hotkey('ctrl', 't')
+    # else:
+    #     logger.info(f"Браузер не открыт, открытие браузера") 
+    #     mcf.win_m()
+    #     mcf.hotkey('win', 's')
+    #     mcf.human_delay()
 
-        mcf.type_text("Google Chrome")
-        mcf.human_delay()
-        mcf.press_key('enter')
-        mcf.human_delay()
-        mcf.hotkey('ctrl', 't')
-        mcf.human_delay()
+    #     mcf.type_text("Google Chrome")
+    #     mcf.human_delay()
+    #     mcf.press_key('enter')
+    #     mcf.human_delay()
+    #     logger.info(f"Активное окно - браузер, открытие новой вкладки")
+    #     mcf.hotkey('ctrl', 't')
+    #     mcf.human_delay()
 
-    mcf.type_text(url)
-    mcf.human_delay()
-    mcf.press_key('enter')
-    mcf.human_delay()
+    # logger.info(f"Ввод URL {url} для просмотра видео")
+    # mcf.type_text(url)
+    # mcf.human_delay()
+    # mcf.press_key('enter')
+    # mcf.human_delay()
+    
+    open_url_in_browser(url)
 
-
-    logger.info(f"файл module_network_requets: Начинается просмотр видео в течение {duration - 10} секунд...")
+    logger.info(f"Начинается просмотр видео в течение {duration - 10} секунд...")
     mcf.sleep(duration - 10)
-    logger.info(f"файл module_network_requets: Просмотр окончен")
+    logger.info(f"Просмотр окончен")
+    logger.info(f"Закрытие окна браузера")
     mcf.hotkey('alt', 'f4')
 
 
@@ -39,6 +45,7 @@ def check_active_window_is_browser():
     
     if active_window and "Chrome" in active_window.title:
         return True
+    logger.info(f"Активное окно не является браузером, но он открыт, выполняется поиск")
     for hwnd, title in get_all_windows():
         if "Chrome" in title:
             active_window = gw.getActiveWindow()
@@ -65,8 +72,10 @@ def get_all_windows():
 def open_url_in_browser(url):
     
     if check_active_window_is_browser():
+        logger.info(f"Активное окно - браузер, открытие новой вкладки")
         mcf.hotkey('ctrl', 't')
     else:
+        logger.info(f"Браузер не открыт, открытие браузера") 
         mcf.win_m()
         mcf.hotkey('win', 's')
         mcf.human_delay()
@@ -75,9 +84,11 @@ def open_url_in_browser(url):
         mcf.human_delay()
         mcf.press_key('enter')
         mcf.human_delay()
+        logger.info(f"Активное окно - браузер, открытие новой вкладки")
         mcf.hotkey('ctrl', 't')
         mcf.human_delay()
 
+    logger.info(f"Ввод URL {url} для открытия в браузере")
     mcf.type_text(url)
     mcf.human_delay()
     mcf.press_key('enter')
@@ -85,24 +96,25 @@ def open_url_in_browser(url):
 
 
 def download_file(url):
-    if check_active_window_is_browser():
-        mcf.hotkey('ctrl', 't')
-    else:
-        mcf.win_m()
-        mcf.hotkey('win', 's')
-        mcf.human_delay()
+    # if check_active_window_is_browser():
+    #     mcf.hotkey('ctrl', 't')
+    # else:
+    #     mcf.win_m()
+    #     mcf.hotkey('win', 's')
+    #     mcf.human_delay()
 
-        mcf.type_text("Google Chrome")
-        mcf.human_delay()
-        mcf.press_key('enter')
-        mcf.human_delay()
-        mcf.hotkey('ctrl', 't')
-        mcf.human_delay()
+    #     mcf.type_text("Google Chrome")
+    #     mcf.human_delay()
+    #     mcf.press_key('enter')
+    #     mcf.human_delay()
+    #     mcf.hotkey('ctrl', 't')
+    #     mcf.human_delay()
 
-    mcf.type_text(url)
-    mcf.human_delay()
-    mcf.press_key('enter')
-    mcf.human_delay()
+    # mcf.type_text(url)
+    # mcf.human_delay()
+    # mcf.press_key('enter')
+    # mcf.human_delay()
+    open_url_in_browser(url)
 
 
 

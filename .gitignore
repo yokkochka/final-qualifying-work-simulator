@@ -3,5 +3,6 @@ main.exe
 main.dist
 main.onefile-build
 venv
+log_dir
 __pycache__
 activity_log.csv

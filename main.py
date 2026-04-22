@@ -1,5 +1,6 @@
 import csv
 import random
+import sys
 import time
 from datetime import datetime
 from src.module_logger import CSVLogger
@@ -9,10 +10,8 @@ import src.module_work_with_files as mwf
 import src.module_network_requests as mnr
 from datetime import datetime, timedelta
 
-
-# CSV_PATH = "plan1.csv"
 CSV_PATH = "current_plan.csv"
-
+DELTA_BETWEEN_TASKS = 2  
 logger = CSVLogger()
 
 def start_execution():
@@ -21,21 +20,17 @@ def start_execution():
     try:
         with open(CSV_PATH) as f:
             reader = csv.DictReader(f)
-            print(reader)
             for row in reader:
-                
                 tasks.append(row)
-        logger.info(f"файл main.py: CSV файл прочитан успешно. Всего строк найдено: {len(tasks)}")
+
+        logger.info(f"CSV файл прочитан успешно. Всего строк найдено: {len(tasks)}")
     except Exception as e:
         logger.error(f"файл main.py: Ошибка при чтении CSV: {str(e)}")
         return []
 
-    # сортируем по секундам (ВАЖНО)
     tasks.sort(key=lambda x: [int(x['hour']), int(x['minute']), int(x['second'])])
+    logger.info(f"Найдено задач: {len(tasks)}")
 
-    # print(f"Найдено задач: {len(tasks)}")
-    logger.info(f"файл main.py: Найдено задач: {len(tasks)}")
-    print(tasks)
     return tasks
 
 
@@ -65,19 +60,43 @@ def check_csv(tasks):
 
         previous_end_time = end_time
 
-    logger.info("файл main.py: CSV прошёл проверку на последовательность задач")
+    logger.info("CSV прошёл проверку на корректность последовательности задач по времени")
     return True
 
 
 
 def main():
+    global CSV_PATH
+    flag_real_time = 1 
+    
+    logger.info("Приложение запущено")
+    
+    if len(sys.argv) == 1:
+        logger.info("Аргументы не переданы, используется значение по умолчанию: план - current_plan.csv, выполнение - в реальном времени")
+    elif len(sys.argv) == 2:
+        if sys.argv[1].isdigit() and (sys.argv[1] == '0' or sys.argv[1] == '1'):
+            flag_real_time = int(sys.argv[1])
+            logger.info(f"Был передан только один аругумент для режима реального времени: {flag_real_time} (1 - в реальном времени, 0 - без учета реального времени)")
+        elif sys.argv[1].endswith('.csv'):
+            CSV_PATH = sys.argv[1]
+            logger.info(f"Был передан только один аргумент, он распознан как путь к CSV файлу: {CSV_PATH}")
+        else:
+            logger.error(f"файл main.py: Был передан только один аргумент, но он не распознан ни как флаг реального времени, ни как путь к CSV файлу. Используются значения по умолчанию: план - current_plan.csv, выполнение - в реальном времени")
+    elif len(sys.argv) == 3:
+        if sys.argv[1].isdigit() and (sys.argv[1] == '0' or sys.argv[1] == '1'):
+            flag_real_time = int(sys.argv[1])
+            logger.info(f"Был передан корректный первый аругумент для режима реального времени: {flag_real_time} (1 - в реальном времени, 0 - без учета реального времени)")
+        else:
+            logger.error(f"файл main.py: Было передано два аргумента, но первый не распознан как флаг реального времени. Используется значение по умолчанию: выполнение - в реальном времени")
+        if sys.argv[2].endswith('.csv'):
+            CSV_PATH = sys.argv[2]
+            logger.info(f"Был передан второй аргумент, он распознан как путь к CSV файлу: {CSV_PATH}")
+        else:
+            logger.error(f"файл main.py: Было передано два аргумента, но второй не распознан как путь к CSV файлу. Используются значения по умолчанию: план - current_plan.csv")
+    else:
+        logger.error(f"файл main.py: Ошибка в передаче аргументов, используются значения по умолчанию: план - current_plan.csv, выполнение - в реальном времени")
+    
     mcf.win_m()
-    logger.info("файл main.py: Приложение запущено")
-
-    # тут еще нужно поставить проверку корректности CSV 
-    # (каждая задача занимает определенное минимальное кол-во секунд, 
-    # нужнно смотреть что duration его не превышало)
-
     tasks = start_execution()
 
     if check_csv(tasks) == False:
@@ -86,20 +105,20 @@ def main():
 
     for task in tasks:
         task_time = datetime.strptime( f"{task['hour']}:{task['minute']}:{task['second']}", "%H:%M:%S")
-
-        # delta = (datetime.now() - task_time).total_seconds()
-        # if delta > 2:
-        #     logger.info(f"файл main.py: Пропуск задачи, т.к. прошло более" + \
-        #                 f"2-х секунд ({datetime.now()}) с предполагаемого времени исполнения: {task_time.time()}")
-        #     continue
-        # else:
-        #     logger.info(f"файл main.py: Задача будет выполнена с опозданием в {delta:.2f} секунд")
+        if flag_real_time == 1:
+            delta = (datetime.now() - task_time).total_seconds()
+            if delta > DELTA_BETWEEN_TASKS:
+                logger.info(f"Пропуск задачи, т.к. прошло более" + \
+                            f"{DELTA_BETWEEN_TASKS}-х секунд ({datetime.now()}) с предполагаемого времени исполнения: {task_time.time()}")
+                continue
+            else:
+                logger.info(f"Задача будет выполнена с опозданием в {delta:.2f} секунд")
         
         while datetime.now() < task_time:
             time.sleep(1)
         
-        logger.info(f"файл main.py: Выполнение задачи {task['action']}" + \
-                    f"({task['hour']}:{task['minute']}:{task['second']}) {task['action']} в {datetime.now().time()}")
+        logger.info(f"Начинается выполнение задачи {task['action']}" + \
+                    f"({task['hour']}:{task['minute']}:{task['second']}) {task['params']} в {datetime.now().strftime('%H-%M-%S')}...")
 
         try:
             mcf.win_m()
@@ -117,7 +136,6 @@ def main():
             elif task['action'] == 'open_notepad_and_write':
                 text = task['params'].split(';')[0].split('=')[1] if 'text=' in task['params'] else "Text not provided"
                 path = task['params'].split(';')[1].split('=')[1] if 'path=' in task['params'] else ""
-                # print(f"DEBUG: text={text}, path={path}")
 
                 mwf.open_notepad_and_write(text=text, path_to_txt=path)
             elif task['action'] == "watch_video":

@@ -10,15 +10,13 @@ def is_trash_empty():
 
 def clear_trash_bin():
     mcf.win_m()
-    logger.info(f"файл module_trash.py: Очистка корзины")
+    logger.info(f"Начинается очистка корзины")
 
-    # Свернулся на рабочий стол 
-    # mcf.win_d()
-
-    # Открываем корзину
-    mcf.move_to(20, 20, 0.5) # Верхний левый ярлычок на рабочем столе - корзина
+    logger.info(f"Открытие корзины")
+    mcf.move_to(20, 20, 0.5) # 
     mcf.click(20,20,3)
 
+    logger.info(f"Удаление содержимого корзины")
     mcf.ctrl_a()
     mcf.human_delay()
     mcf.press_key('del')
@@ -27,11 +25,12 @@ def clear_trash_bin():
 
     start_time = time.time()
 
+    logger.info(f"Ожидание завершения очистки корзины")
     while is_trash_empty() == False and start_time - time.time() < 10:
         mcf.human_delay()
 
+    logger.info(f"Очистка корзины завершена")
     mcf.human_delay()
     mcf.alt_f4()
 
-  
     return

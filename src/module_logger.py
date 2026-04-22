@@ -1,8 +1,11 @@
 import logging
 import os
+from datetime import datetime
 
 class CSVLogger:
-    def __init__(self, filename="activity_log.csv"):
+    def __init__(self, filename="None"):
+        if filename == "None":
+            filename = f"log_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.csv"
         self.filename = filename
         self._prepare_file()
         
@@ -48,7 +51,8 @@ class CSVLogger:
             self.logger.debug(full_msg)
 
     def _prepare_file(self):
-        # if not os.path.exists(self.filename):
-        if os.path.exists(self.filename):
-            with open(self.filename, 'w', encoding='utf-8') as f:
-                f.write("timestamp;level\n")
+        if not os.path.isdir('logs_dir'):
+            os.makedirs('logs_dir')
+        self.filename = os.path.join('logs_dir', self.filename)
+        with open(self.filename, 'w', encoding='utf-8') as f:
+            f.write("timestamp;level;message\n")
